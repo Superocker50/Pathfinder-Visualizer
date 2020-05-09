@@ -1,5 +1,3 @@
-import { isElementOfType } from "react-dom/test-utils"
-
 function createGraph(width, height) {
     let graph = [[]]
     for (let row = 0; row < width; row++) {

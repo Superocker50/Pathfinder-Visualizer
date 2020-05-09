@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import Pathfinder from "./Pathfinder"
-import Grid from "./Grid"
-import Node from "./Node"
 import "bootstrap/dist/css/bootstrap.css"
 import * as serviceWorker from './serviceWorker';
 

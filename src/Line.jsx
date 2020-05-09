@@ -10,8 +10,8 @@ class Line extends React.Component {
             <span
                 className="line"
                 style={{
-                    left: this.props.row * marginFactor + 12,
-                    top: this.props.col * marginFactor + 13
+                    left: row * marginFactor + 12,
+                    top: col * marginFactor + 13
                 }}
             />
         )

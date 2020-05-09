@@ -2,7 +2,7 @@ import React from 'react'
 import Node from './Node'
 import "./Grid.css"
 import Line from "./Line"
-import Graph, { dijkstra } from "./Graph"
+import { dijkstra } from "./Graph"
 
 const width = 30
 const height = 10
@@ -19,6 +19,7 @@ let endNodeAnimate = 0
 let startPathAnimate = 0
 let animatedPath = []
 let endPathAnimate = 0
+let animationStarted = false
 
 class Grid extends React.Component {
     constructor() {
@@ -29,6 +30,7 @@ class Grid extends React.Component {
     }
 
     resetState = () => {
+        
         animatedNormalNodes.forEach((nodeAnimation) => clearTimeout(nodeAnimation))
         animatedPath.forEach((nodeAnimation) => clearTimeout(nodeAnimation))
 
@@ -37,7 +39,6 @@ class Grid extends React.Component {
         clearTimeout(startPathAnimate)
         clearTimeout(endPathAnimate)
 
-        let grid = this.state.grid
         for (let row = 0; row < width; row++) {
             for (let col = 0; col < height; col++) {
                 if (row === startX && col === startY) {
@@ -54,6 +55,7 @@ class Grid extends React.Component {
                 }
             }
         }
+        animationStarted = false
     }
 
     edgeNode = (row, col) => {
@@ -124,13 +126,16 @@ class Grid extends React.Component {
     }
 
     visualize = () => {
-        let animatedNodes = dijkstra(width, height, startX, startY, endX, endY)
-        startNodeAnimate = animatedNodes[0]
-        animatedNormalNodes = animatedNodes[1]
-        endNodeAnimate = animatedNodes[2]
-        startPathAnimate = animatedNodes[3][0]
-        animatedPath = animatedNodes[3][1]
-        endPathAnimate = animatedNodes[3][2]
+        if (!animationStarted) {
+            animationStarted = true 
+            let animatedNodes = dijkstra(width, height, startX, startY, endX, endY)
+            startNodeAnimate = animatedNodes[0]
+            animatedNormalNodes = animatedNodes[1]
+            endNodeAnimate = animatedNodes[2]
+            startPathAnimate = animatedNodes[3][0]
+            animatedPath = animatedNodes[3][1]
+            endPathAnimate = animatedNodes[3][2]
+        }
     }
 
     createGrid = () => {
