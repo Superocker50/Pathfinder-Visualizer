@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.css"
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <Grid />,
+  <Pathfinder />,
   document.getElementById('root')
 );
 

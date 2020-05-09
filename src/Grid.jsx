@@ -10,8 +10,8 @@ const height = 10
 const startX = 2
 const startY = 2
 
-const endX = 27
-const endY = 7
+const endX = 22
+const endY = 6
 
 let startNodeAnimate = 0
 let animatedNormalNodes = []
