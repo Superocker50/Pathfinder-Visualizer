@@ -1,0 +1,26 @@
+.startButton {
+    font-size: 20px;
+    color: black;
+    background-color: lightgreen;
+    position: relative;
+    margin: 15px;
+    text-align: center;
+    left: 25%; 
+}
+
+.resetButton {
+    font-size: 20px;
+    color: black;
+    background-color: lightcoral;
+    text-align: center;
+    position: relative;
+    margin: 15px;
+    left: 50%; 
+}
+
+.header {
+    text-align: center;
+    font-size: xx-large;
+    background-color: burlywood;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}

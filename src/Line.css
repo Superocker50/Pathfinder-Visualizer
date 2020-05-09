@@ -1,0 +1,9 @@
+.line {
+    height: 40px; 
+    width: 40px;     
+    position: absolute;
+    outline: 1px solid black;
+    display: inline-block; 
+    margin: 3cm;
+}
+
