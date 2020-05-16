@@ -6,6 +6,7 @@ class Pathfinder extends React.Component {
         return (
             <div>
                 <Grid> </Grid>
+                
             </div>
         )
     }

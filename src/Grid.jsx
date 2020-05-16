@@ -3,15 +3,16 @@ import Node from './Node'
 import "./Grid.css"
 import Line from "./Line"
 import { dijkstra } from "./Graph"
+import InputChange from "./InputChange"
 
 const width = 30
 const height = 10
 
-const startX = 2
-const startY = 2
+const defaultStartX = 2
+const defaultStartY = 2
 
-const endX = 22
-const endY = 6
+const defaultEndX = 22
+const defaultEndY = 6
 
 let startNodeAnimate = 0
 let animatedNormalNodes = []
@@ -25,12 +26,23 @@ class Grid extends React.Component {
     constructor() {
         super()
         this.state = {
-            grid: this.createGrid()
+            startRow: defaultStartY,
+            startCol: defaultStartX,
+            endRow: defaultEndY,
+            endCol: defaultEndX,
+            grid: null,
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            grid: this.createGrid()
+        })
+    }
+
     resetState = () => {
-        
+        let { startRow, startCol, endRow, endCol } = this.state
+
         animatedNormalNodes.forEach((nodeAnimation) => clearTimeout(nodeAnimation))
         animatedPath.forEach((nodeAnimation) => clearTimeout(nodeAnimation))
 
@@ -39,27 +51,56 @@ class Grid extends React.Component {
         clearTimeout(startPathAnimate)
         clearTimeout(endPathAnimate)
 
-        for (let row = 0; row < width; row++) {
-            for (let col = 0; col < height; col++) {
-                if (row === startX && col === startY) {
+        this.resetGrid(startRow, startCol, endRow, endCol)
+
+        animationStarted = false
+    }
+
+    validInput = () => {
+        const { startRow, startCol, endRow, endCol } = this.state
+        let validInput = true
+        if (document.getElementById(`node-${startRow - 1}-${startCol - 1}`) === null) {
+            validInput = false
+        }
+        if (document.getElementById(`node-${endRow - 1}-${endCol - 1}`) === null) {
+            validInput = false
+        }
+        return validInput
+    }
+
+    resetGrid = (startRow, startCol, endRow, endCol) => {
+
+        let validInput = false
+        if (this.validInput()) {
+            startRow = parseInt(startRow - 1)
+            startCol = parseInt(startCol - 1)
+            endRow = parseInt(endRow - 1)
+            endCol = parseInt(endCol - 1)
+            validInput = true
+        }
+
+        for (let col = 0; col < width && validInput; col++) {
+            for (let row = 0; row < height && validInput; row++) {
+                if (row === startRow && col === startCol) {
                     document.getElementById(`node-${row}-${col}`)
                         .className = "dot startNode"
                 }
-                else if (row === endX && col === endY) {
+                else if (row === endRow && col === endCol) {
                     document.getElementById(`node-${row}-${col}`)
                         .className = "dot endNode"
                 }
                 else {
-                    document.getElementById(`node-${row}-${col}`)
-                        .className = "dot"
+                    console.log("NODE IS: ", row, ",", col)
+                    document.getElementById(`node-${row}-${col}`).className = "dot"
                 }
             }
         }
-        animationStarted = false
     }
 
-    edgeNode = (row, col) => {
-        if (col === startY && row === startX) {
+    edgeNode = (col, row) => {
+
+        const { startRow, startCol, endRow, endCol } = this.state
+        if (col === startCol - 1 && row === startRow - 1) {
             return <div>
                 <Node id={`node-${row}-${col}`}
                     distance={Infinity}
@@ -69,7 +110,7 @@ class Grid extends React.Component {
                     isStart={true} />
             </div>
         }
-        else if (col === endY && row === endX) {
+        else if (col === endCol - 1 && row === endRow - 1) {
             return <div>
                 <Node id={`node-${row}-${col}`}
                     distance={Infinity}
@@ -90,8 +131,9 @@ class Grid extends React.Component {
         }
     }
 
-    normalNode = (row, col) => {
-        if (col === startY && row === startX) {
+    normalNode = (col, row) => {
+        const { startRow, startCol, endRow, endCol } = this.state
+        if (col === startCol - 1 && row === startRow - 1) {
             return <div>
                 <Line row={row} col={col} />
                 <Node id={`node-${row}-${col}`}
@@ -102,7 +144,7 @@ class Grid extends React.Component {
                     isStart={true} />
             </div>
         }
-        else if (col === endY && row === endX) {
+        else if (col === endCol - 1 && row === endRow - 1) {
             return <div>
                 <Line row={row} col={col} />
                 <Node id={`node-${row}-${col}`}
@@ -126,9 +168,13 @@ class Grid extends React.Component {
     }
 
     visualize = () => {
-        if (!animationStarted) {
-            animationStarted = true 
-            let animatedNodes = dijkstra(width, height, startX, startY, endX, endY)
+        const { startRow, startCol, endRow, endCol } = this.state
+
+        if (!animationStarted && this.validInput()) {
+            animationStarted = true
+            let animatedNodes = dijkstra(width, height, startCol - 1,
+                startRow - 1, endCol - 1, endRow - 1)
+
             startNodeAnimate = animatedNodes[0]
             animatedNormalNodes = animatedNodes[1]
             endNodeAnimate = animatedNodes[2]
@@ -136,23 +182,31 @@ class Grid extends React.Component {
             animatedPath = animatedNodes[3][1]
             endPathAnimate = animatedNodes[3][2]
         }
+        else if (!this.validInput()) {
+            window.alert("Invaid input!\nRow Range: [1,10]\nColumn Range: [1,30]")
+        }
     }
 
     createGrid = () => {
         let grid = [[]]
-        for (let row = 0; row < width; row++) {
-            grid[row] = []
-            for (let col = 0; col < height; col++) {
-
-                if (col === height - 1 || row === width - 1) {
-                    grid[row][col] = this.edgeNode(row, col)
+        for (let col = 0; col < width; col++) {
+            grid[col] = []
+            for (let row = 0; row < height; row++) {
+                if (col === width - 1 || row === height - 1) {
+                    grid[col][row] = this.edgeNode(col, row)
                 }
                 else {
-                    grid[row][col] = this.normalNode(row, col)
+                    grid[col][row] = this.normalNode(col, row)
                 }
             }
         }
         return grid
+    }
+
+    handleRowColChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => this.resetState())
     }
 
     render() {
@@ -176,6 +230,13 @@ class Grid extends React.Component {
                     Reset
                 </button>
 
+                <InputChange
+                    startCol={this.state.startCol}
+                    startRow={this.state.startRow}
+                    endCol={this.state.endCol}
+                    endRow={this.state.endRow}
+                    handleRowColChange={this.handleRowColChange}
+                />
             </React.Fragment>
         )
     }

@@ -38,8 +38,8 @@ class Node extends React.Component {
                 <span id={this.props.id}
                     className={`dot ${this.getNodeType()}`}
                     style={{
-                        left: this.props.row * marginFactor,
-                        top: this.props.col * marginFactor
+                        left: this.props.col * marginFactor,
+                        top: this.props.row * marginFactor
                     }}
                 >
                 </span>

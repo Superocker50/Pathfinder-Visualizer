@@ -1,10 +1,10 @@
 function createGraph(width, height) {
     let graph = [[]]
-    for (let row = 0; row < width; row++) {
-        graph[row] = []
-        for (let col = 0; col < height; col++) {
-            graph[row][col] = []
-            let currentNode = graph[row][col]
+    for (let col = 0; col < width; col++) {
+        graph[col] = []
+        for (let row = 0; row < height; row++) {
+            graph[col][row] = []
+            let currentNode = graph[col][row]
             currentNode.row = row
             currentNode.col = col
             currentNode.isVisited = false
@@ -18,20 +18,20 @@ function createGraph(width, height) {
 function nodesNotVisitedFromGivenNode(graph, node, width, height) {
     let nodes = []
 
-    if (node.col - 1 >= 0 && node.row >= 0) {
-        let top = graph[node.row][node.col - 1]
+    if (node.row - 1 >= 0 && node.col >= 0) {
+        let top = graph[node.col][node.row - 1]
         if (!top.isVisited) nodes.push(top)
     }
-    if (node.row - 1 >= 0 && node.col >= 0) {
-        let left = graph[node.row - 1][node.col]
+    if (node.col - 1 >= 0 && node.row >= 0) {
+        let left = graph[node.col - 1][node.row]
         if (!left.isVisited) nodes.push(left)
     }
-    if (node.row + 1 < width && node.col >= 0) {
-        let right = graph[node.row + 1][node.col]
+    if (node.col + 1 < width && node.row >= 0) {
+        let right = graph[node.col + 1][node.row]
         if (!right.isVisited) nodes.push(right)
     }
-    if (node.row >= 0 && node.col + 1 < height) {
-        let bottom = graph[node.row][node.col + 1]
+    if (node.col >= 0 && node.row + 1 < height) {
+        let bottom = graph[node.col][node.row + 1]
         if (!bottom.isVisited) nodes.push(bottom)
     }
     return nodes
@@ -49,7 +49,7 @@ export function dijkstra(width, height, startX, startY, endX, endY) {
     let startNode = closestNode
     let endNode = graph[endX][endY]
 
-    while (closestNode.row !== endX || closestNode.col !== endY) {
+    while (closestNode.row !== endY || closestNode.col !== endX) {
         closestNode.isVisited = true
         visitedNodesInOrder.push(closestNode)
 
@@ -75,13 +75,13 @@ export function dijkstra(width, height, startX, startY, endX, endY) {
 
         closestNode = findNodeWithMinDist(graph, width, height)
     }
-
     endNodeAnimate = setTimeout(() => {
         document.getElementById(`node-${endNode.row}-${endNode.col}`)
             .className = "dot endNodeAnimate"
     }, (visitedNodesInOrder.length) * 100)
 
     visitedNodesInOrder.push(closestNode)
+
     let traceAnimations = traceBack(graph, startNode, endNode, visitedNodesInOrder)
 
     return [startNodeAnimate, animatedNormalNodes, endNodeAnimate, traceAnimations]
@@ -90,7 +90,7 @@ export function dijkstra(width, height, startX, startY, endX, endY) {
 function updateDist(graph, unVisitedNodes, closestNode) {
     for (let k = 0; k < unVisitedNodes.length; k++) {
         let node = unVisitedNodes[k]
-        let nodeInGraph = graph[node.row][node.col]
+        let nodeInGraph = graph[node.col][node.row]
 
         if (nodeInGraph.distance > closestNode.distance + 1) {
             nodeInGraph.distance = closestNode.distance + 1
@@ -102,12 +102,12 @@ function updateDist(graph, unVisitedNodes, closestNode) {
 function findNodeWithMinDist(graph, width, height) {
     let currentMin = Infinity
     let currentMinNode = null
-    for (let row = 0; row < width; row++) {
-        for (let col = 0; col < height; col++) {
-            if (graph[row][col].isVisited === false &&
-                graph[row][col].distance < currentMin) {
-                currentMin = graph[row][col].distance
-                currentMinNode = graph[row][col]
+    for (let col = 0; col < width; col++) {
+        for (let row = 0; row < height; row++) {
+            if (graph[col][row].isVisited === false &&
+                graph[col][row].distance < currentMin) {
+                currentMin = graph[col][row].distance
+                currentMinNode = graph[col][row]
             }
         }
     }
@@ -119,7 +119,7 @@ function traceBack(graph, startNode, endNode, visitedNodesInOrder) {
     let startPathAnimate = 0
     let animatedPath = []
     let endPathAnimate = 0
-    let currentNode = graph[endNode.row][endNode.col]
+    let currentNode = graph[endNode.col][endNode.row]
 
     while (currentNode.row !== startNode.row || currentNode.col !== startNode.col) {
         shortestPath.push(currentNode)

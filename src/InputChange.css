@@ -1,0 +1,28 @@
+.startRowText {
+    position: absolute;
+    bottom: 2cm; 
+    left: 7cm; 
+    margin: 1px;
+    width: 350px; 
+    text-align: center;
+}
+
+.startColText{
+    bottom: 1cm; 
+    left: 6.67cm; 
+}
+
+.endRowText {
+    position: absolute; 
+    bottom: 2cm; 
+    right: 7cm; 
+    margin: 1px;
+    width:350px; 
+    text-align: center;
+}
+
+.endColText {
+    bottom: 1cm; 
+    right: 7.34cm; 
+}
+
