@@ -22,6 +22,8 @@ let animatedPath = []
 let endPathAnimate = 0
 let animationStarted = false
 
+// I see here you use class components, but elsewhere functional components.
+// Please keep things consistent! Dr. Fraser taught you better.
 class Grid extends React.Component {
     constructor() {
         super()
